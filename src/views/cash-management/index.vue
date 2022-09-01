@@ -116,6 +116,18 @@
 
 				<el-table-column prop="method" label="方法(后端接口参照此方法名称来定位调用方法处理)" min-width="100" />
 
+				<el-table-column
+					prop="status"
+					label="状态"
+					min-width="100"
+				>
+					<template slot-scope="scope">
+						<el-tag
+							:type="scope.row.relation_type === 0 ? 'danger' : (scope.row.relation_type === 1 ? 'warning' : 'success')"
+						>{{ scope.row.relation_type === 0 ? '无关联' : (scope.row.relation_type === 1 ? '关联卡id' : '关联对象') }}</el-tag>
+					</template>
+				</el-table-column>
+
 				<el-table-column prop="relation_card" label="关联的要触发的卡id(以','号隔开或键值对的json)" min-width="100" />
 
 				<el-table-column prop="is_need_fill" label="抽到卡时是否需要填写" min-width="100" />
@@ -178,15 +190,29 @@
 
 			<el-form ref="addForm" :model="addForm" :rules="addRules" label-position="left" :label-width="formLabelWidth">
 
+				<!--				<el-form-item label="关联卡类别主键id：" prop="category_id">-->
+				<!--					<el-input v-model="addForm.category_id" autocomplete="off" placeholder="（数值）请输入关联卡类别主键id" />-->
+				<!--				</el-form-item>-->
 				<el-form-item label="关联卡类别主键id：" prop="category_id">
-					<el-input v-model="addForm.category_id" autocomplete="off" placeholder="（数值）请输入关联卡类别主键id" />
+					<el-select
+						v-model="addForm.category_id"
+						clearable
+						placeholder="请选择"
+					>
+						<el-option
+							v-for="item in categoryList"
+							:key="item.id"
+							:label="item.category_name"
+							:value="String(item.id)"
+						/>
+					</el-select>
 				</el-form-item>
 
 				<el-form-item label="卡名称：" prop="card_name">
 					<el-input v-model="addForm.card_name" autocomplete="off" placeholder="请输入卡名称" />
 				</el-form-item>
 
-				<el-form-item label="卡类型：">
+				<el-form-item label="卡类型：" prop="type">
 					<el-select
 						v-model="addForm.type"
 						clearable
@@ -199,7 +225,7 @@
 					</el-select>
 				</el-form-item>
 
-				<el-form-item label="是否触发所有玩家：">
+				<el-form-item label="是否触发所有玩家：" prop="is_all">
 					<el-select
 						v-model="addForm.is_all"
 						clearable
@@ -234,7 +260,7 @@
 					<el-input v-model="addForm.liabilities" autocomplete="off" placeholder="（数值）请输入负债" />
 				</el-form-item>
 
-				<el-form-item label="是否需要banker跟进处理：">
+				<el-form-item label="是否需要banker跟进处理：" prop="is_banker_follow">
 					<el-select
 						v-model="addForm.is_banker_follow"
 						clearable
@@ -245,15 +271,74 @@
 					</el-select>
 				</el-form-item>
 
+				<!--				<el-form-item label="方法(后端接口参照此方法名称来定位调用方法处理)：" prop="method">-->
+				<!--					<el-input v-model="addForm.method" autocomplete="off" placeholder="请输入方法" />-->
+				<!--				</el-form-item>-->
 				<el-form-item label="方法(后端接口参照此方法名称来定位调用方法处理)：" prop="method">
-					<el-input v-model="addForm.method" autocomplete="off" placeholder="请输入方法" />
+					<el-select
+						v-model="addForm.method"
+						clearable
+						placeholder="请选择"
+					>
+						<el-option
+							v-for="item in methodList"
+							:key="item.id"
+							:label="item.method_name"
+							:value="item.method"
+						/>
+					</el-select>
 				</el-form-item>
 
-				<el-form-item label="关联的要触发的卡id(以,号隔开或键值对的json)：" prop="relation_card">
-					<el-input v-model="addForm.relation_card" autocomplete="off" placeholder="请输入关联的要触发的卡id" />
+				<el-form-item label="关联类型(0:无关联,1:关联卡id,以逗号隔开,2:关联对象,卡id为键,value为值)：" prop="relation_type">
+					<!--					<el-input v-model="addForm.relation_type" autocomplete="off" placeholder="请输入关联类型" />-->
+					<el-select
+						v-model="addForm.relation_type"
+						clearable
+						placeholder="请选择"
+					>
+						<el-option label="无关联" value="0"></el-option>
+						<el-option label="关联卡id" value="1"></el-option>
+						<el-option label="关联对象" value="2"></el-option>
+					</el-select>
 				</el-form-item>
 
-				<el-form-item label="抽到卡时是否需要填写：">
+				<el-form-item v-if="addForm.relation_type==='1'" label="关联的要触发的卡id(以,号隔开)：" prop="relation_card">
+					<el-select v-model="relationCardComma" multiple placeholder="请选择">
+						<el-option
+							v-for="item in tableData.data"
+							:key="item.id"
+							:label="item.card_name"
+							:value="item.id"
+						>
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item v-if="addForm.relation_type==='2'" label="关联的要触发的卡id(键值对的json)：" prop="relation_card">
+					<template>
+						<div v-for="(i, index) in relationCardJson" :key="index" style="display: flex;">
+							<el-select
+								v-model="i.id"
+								clearable
+								placeholder="请选择"
+							>
+								<el-option
+									v-for="item in tableData.data"
+									:key="item.id"
+									:label="item.card_name"
+									:value="item.id"
+								>
+								</el-option>
+							</el-select>
+							<el-input v-model="i.value" autocomplete="off" placeholder="请输入关联的要触发的卡的值" />
+						</div>
+						<el-button type="primary" plain style="margin-top: 4px;" @click="addRelationCardJson()">
+							新增关联的要触发的卡
+						</el-button>
+					</template>
+				</el-form-item>
+
+				<el-form-item label="抽到卡时是否需要填写：" prop="is_need_fill">
 					<el-select
 						v-model="addForm.is_need_fill"
 						clearable
@@ -264,7 +349,7 @@
 					</el-select>
 				</el-form-item>
 
-				<el-form-item label="状态：">
+				<el-form-item label="状态：" prop="status">
 					<el-select
 						v-model="addForm.status"
 						clearable
@@ -275,7 +360,7 @@
 					</el-select>
 				</el-form-item>
 
-				<el-form-item label="卡的类别：">
+				<el-form-item label="卡的类别：" prop="class">
 					<el-select
 						v-model="addForm.class"
 						clearable
@@ -317,15 +402,29 @@
 					<el-input v-model="editForm.id" autocomplete="off" disabled placeholder="（数值）请输入卡表主键id" />
 				</el-form-item>
 
+				<!--				<el-form-item label="关联卡类别主键id：" prop="category_id">-->
+				<!--					<el-input v-model="editForm.category_id" autocomplete="off" placeholder="（数值）请输入关联卡类别主键id" />-->
+				<!--				</el-form-item>-->
 				<el-form-item label="关联卡类别主键id：" prop="category_id">
-					<el-input v-model="editForm.category_id" autocomplete="off" placeholder="（数值）请输入关联卡类别主键id" />
+					<el-select
+						v-model="editForm.category_id"
+						clearable
+						placeholder="请选择"
+					>
+						<el-option
+							v-for="item in categoryList"
+							:key="item.id"
+							:label="item.category_name"
+							:value="String(item.id)"
+						/>
+					</el-select>
 				</el-form-item>
 
 				<el-form-item label="卡名称：" prop="card_name">
 					<el-input v-model="editForm.card_name" autocomplete="off" placeholder="请输入卡名称" />
 				</el-form-item>
 
-				<el-form-item label="卡类型：">
+				<el-form-item label="卡类型：" prop="type">
 					<el-select
 						v-model="editForm.type"
 						clearable
@@ -338,7 +437,7 @@
 					</el-select>
 				</el-form-item>
 
-				<el-form-item label="是否触发所有玩家：">
+				<el-form-item label="是否触发所有玩家：" prop="is_all">
 					<el-select
 						v-model="editForm.is_all"
 						clearable
@@ -373,7 +472,7 @@
 					<el-input v-model="editForm.liabilities" autocomplete="off" placeholder="（数值）请输入负债" />
 				</el-form-item>
 
-				<el-form-item label="是否需要banker跟进处理：">
+				<el-form-item label="是否需要banker跟进处理：" prop="is_banker_follow">
 					<el-select
 						v-model="editForm.is_banker_follow"
 						clearable
@@ -384,15 +483,77 @@
 					</el-select>
 				</el-form-item>
 
+				<!--				<el-form-item label="方法(后端接口参照此方法名称来定位调用方法处理)：" prop="method">-->
+				<!--					<el-input v-model="editForm.method" autocomplete="off" placeholder="请输入方法" />-->
+				<!--				</el-form-item>-->
 				<el-form-item label="方法(后端接口参照此方法名称来定位调用方法处理)：" prop="method">
-					<el-input v-model="editForm.method" autocomplete="off" placeholder="请输入方法" />
+					<el-select
+						v-model="editForm.method"
+						clearable
+						placeholder="请选择"
+					>
+						<el-option
+							v-for="item in methodList"
+							:key="item.id"
+							:label="item.method_name"
+							:value="item.method"
+						/>
+					</el-select>
 				</el-form-item>
 
-				<el-form-item label="关联的要触发的卡id(以,号隔开或键值对的json)：" prop="relation_card">
-					<el-input v-model="editForm.relation_card" autocomplete="off" placeholder="请输入关联的要触发的卡id" />
+				<!--				<el-form-item label="关联的要触发的卡id(以,号隔开或键值对的json)：" prop="relation_card">-->
+				<!--					<el-input v-model="editForm.relation_card" autocomplete="off" placeholder="请输入关联的要触发的卡id" />-->
+				<!--				</el-form-item>-->
+				<el-form-item label="关联类型(0:无关联,1:关联卡id,以逗号隔开,2:关联对象,卡id为键,value为值)：" prop="relation_type">
+					<!--					<el-input v-model="addForm.relation_type" autocomplete="off" placeholder="请输入关联类型" />-->
+					<el-select
+						v-model="editForm.relation_type"
+						clearable
+						placeholder="请选择"
+					>
+						<el-option label="无关联" value="0"></el-option>
+						<el-option label="关联卡id" value="1"></el-option>
+						<el-option label="关联对象" value="2"></el-option>
+					</el-select>
 				</el-form-item>
 
-				<el-form-item label="抽到卡时是否需要填写：">
+				<el-form-item v-if="editForm.relation_type==='1'" label="关联的要触发的卡id(以,号隔开)：" prop="relation_card">
+					<el-select v-model="relationCardCommaEdit" multiple placeholder="请选择">
+						<el-option
+							v-for="item in tableData.data"
+							:key="item.id"
+							:label="item.card_name"
+							:value="item.id"
+						>
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item v-if="editForm.relation_type==='2'" label="关联的要触发的卡id(键值对的json)：" prop="relation_card">
+					<template>
+						<div v-for="(i, index) in relationCardJsonEdit" :key="index" style="display: flex;">
+							<el-select
+								v-model="i.id"
+								clearable
+								placeholder="请选择"
+							>
+								<el-option
+									v-for="item in tableData.data"
+									:key="item.id"
+									:label="item.card_name"
+									:value="item.id"
+								>
+								</el-option>
+							</el-select>
+							<el-input v-model="i.value" autocomplete="off" placeholder="请输入关联的要触发的卡的值" />
+						</div>
+						<el-button type="primary" plain style="margin-top: 4px;" @click="addRelationCardJsonEdit()">
+							新增关联的要触发的卡
+						</el-button>
+					</template>
+				</el-form-item>
+
+				<el-form-item label="抽到卡时是否需要填写：" prop="is_need_fill">
 					<el-select
 						v-model="editForm.is_need_fill"
 						clearable
@@ -403,7 +564,7 @@
 					</el-select>
 				</el-form-item>
 
-				<el-form-item label="状态：">
+				<el-form-item label="状态：" prop="status">
 					<el-select
 						v-model="editForm.status"
 						clearable
@@ -414,7 +575,7 @@
 					</el-select>
 				</el-form-item>
 
-				<el-form-item label="卡的类别：">
+				<el-form-item label="卡的类别：" prop="class">
 					<el-select
 						v-model="editForm.class"
 						clearable
@@ -444,7 +605,7 @@
 </template>
 
 <script>
-import { GetCardList, OperateCard, DeleteCard } from '@/api/admin'
+import { GetCardList, OperateCard, DeleteCard, GetCategoryList, GetMethodList } from '@/api/admin'
 
 export default {
 	name: 'CashManagement',
@@ -483,6 +644,7 @@ export default {
 				liabilities: '',
 				is_banker_follow: '',
 				method: '',
+				relation_type: '',
 				relation_card: '',
 				is_need_fill: '',
 				status: '',
@@ -503,7 +665,8 @@ export default {
 				liabilities: [ { required: false, message: '不能为空', change: 'blue' } ],
 				is_banker_follow: [ { required: false, message: '不能为空', change: 'blue' } ],
 				method: [ { required: false, message: '不能为空', change: 'blue' } ],
-				relation_card: [ { required: false, message: '不能为空', change: 'blue' } ],
+				relation_type: [ { required: false, message: '不能为空', change: 'blue' } ],
+				// relation_card: [ { required: false, message: '不能为空', change: 'blue' } ],
 				is_need_fill: [ { required: false, message: '不能为空', change: 'blue' } ],
 				status: [ { required: false, message: '不能为空', change: 'blue' } ],
 				class: [ { required: false, message: '不能为空', change: 'blue' } ],
@@ -525,6 +688,7 @@ export default {
 				liabilities: '',
 				is_banker_follow: '',
 				method: '',
+				relation_type: '',
 				relation_card: '',
 				is_need_fill: '',
 				status: '',
@@ -545,16 +709,31 @@ export default {
 				liabilities: [ { required: false, message: '不能为空', change: 'blue' } ],
 				is_banker_follow: [ { required: false, message: '不能为空', change: 'blue' } ],
 				method: [ { required: false, message: '不能为空', change: 'blue' } ],
-				relation_card: [ { required: false, message: '不能为空', change: 'blue' } ],
+				relation_type: [ { required: false, message: '不能为空', change: 'blue' } ],
+				// relation_card: [ { required: false, message: '不能为空', change: 'blue' } ],
 				is_need_fill: [ { required: false, message: '不能为空', change: 'blue' } ],
 				status: [ { required: false, message: '不能为空', change: 'blue' } ],
 				class: [ { required: false, message: '不能为空', change: 'blue' } ],
 				describe: [ { required: false, message: '不能为空', change: 'blue' } ]
-			}
+			},
+
+			// 分类
+			categoryList: [],
+
+			// 方法
+			methodList: [],
+
+			// 添加
+			relationCardComma: [],
+			relationCardJson: [ { id: '', value: '' } ],
+			relationCardCommaEdit: [],
+			relationCardJsonEdit: [ { id: '', value: '' } ]
 		}
 	},
 	mounted() {
 		this.getList()
+		this.getCategoryList()
+		this.getMethodList()
 	},
 	methods: {
 		// 打开新增页面
@@ -574,6 +753,35 @@ export default {
 		// 		this.addForm.account = ''
 		// 	}
 		// },
+
+		// 获取分类
+		async getCategoryList() {
+			await GetCategoryList({
+				page: '',
+				limit: ''
+			})
+				.then((res) => {
+					this.categoryList = res.data.items
+				})
+				.catch((err) => {
+					this.$message.error('获取分类失败')
+				})
+		},
+
+		// 获取方法
+		async getMethodList() {
+			await GetMethodList({
+				page: '',
+				limit: '',
+				status: ''
+			})
+				.then((res) => {
+					this.methodList = res.data.items
+				})
+				.catch((err) => {
+					this.$message.error('获取方法失败')
+				})
+		},
 
 		// 查询
 		infoSearch() {
@@ -633,11 +841,33 @@ export default {
 				liabilities: String(e.liabilities),
 				is_banker_follow: String(e.is_banker_follow),
 				method: e.method,
+				relation_type: String(e.relation_type),
 				relation_card: e.relation_card,
 				is_need_fill: String(e.is_need_fill),
 				status: String(e.status),
 				class: String(e.class),
 				describe: e.describe
+			}
+			this.relationCardCommaEdit = []
+			this.relationCardJsonEdit = [ { id: '', value: '' } ]
+			if (this.editForm.relation_type === '1') {
+				// console.log(this.relationCardCommaEdit)
+				this.relationCardCommaEdit = e.relation_card.split(',').map((item) => {
+					item = Number(item)
+					return item
+				})
+				// console.log(this.relationCardCommaEdit)
+			} else if (this.editForm.relation_type === '2') {
+				// console.log(JSON.parse(e.relation_card))
+				const tempObj = JSON.parse(e.relation_card)
+				const tempArr = []
+				for (const i in tempObj) {
+					tempArr.push({ id: i, value: tempObj[i] })
+				}
+				this.relationCardJsonEdit = tempArr.map((item) => {
+					item.id = Number(item.id)
+					return item
+				})
 			}
 			this.edit_visible = true
 		},
@@ -663,6 +893,20 @@ export default {
 			this.$refs[formName].validate((valid) => {
 				// 若必填项不为空
 				if (valid) {
+					// console.log(this.addForm)
+					// console.log(this.relationCardComma)
+					// console.log(this.relationCardJson)
+					if (this.addForm.relation_type === '0') {
+						this.addForm.relation_card = ''
+					} else if (this.addForm.relation_type === '1') {
+						this.addForm.relation_card = this.relationCardComma.join()
+					} else if (this.addForm.relation_type === '2') {
+						const tempObj = {}
+						this.relationCardJson.forEach((item) => {
+							tempObj[item.id] = item.value
+						})
+						this.addForm.relation_card = tempObj
+					}
 					OperateCard(this.addForm)
 						.then(() => {
 							this.$message.success('新增成功！')
@@ -684,6 +928,20 @@ export default {
 			this.$refs[formName].validate((valid) => {
 				// 若必填项不为空
 				if (valid) {
+					console.log(this.editForm)
+					console.log(this.relationCardCommaEdit)
+					console.log(this.relationCardJsonEdit)
+					if (this.editForm.relation_type === '0') {
+						this.editForm.relation_card = ''
+					} else if (this.editForm.relation_type === '1') {
+						this.editForm.relation_card = this.relationCardCommaEdit.join()
+					} else if (this.editForm.relation_type === '2') {
+						const tempObj = {}
+						this.relationCardJsonEdit.forEach((item) => {
+							tempObj[item.id] = item.value
+						})
+						this.editForm.relation_card = tempObj
+					}
 					OperateCard(this.editForm)
 						.then(() => {
 							this.$message.success('修改成功！')
@@ -697,6 +955,13 @@ export default {
 					return false
 				}
 			})
+		},
+
+		addRelationCardJson() {
+			this.relationCardJson.push({ id: '', value: '' })
+		},
+		addRelationCardJsonEdit() {
+			this.relationCardJsonEdit.push({ id: '', value: '' })
 		}
 
 	}

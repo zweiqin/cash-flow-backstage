@@ -180,7 +180,7 @@
 			</el-form>
 
 			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" @click="addSubmit('addForm')">添加卡牌</el-button>
+				<el-button type="primary" @click="addSubmit('addForm')">添加角色</el-button>
 			</div>
 		</el-dialog>
 		<!-- e新增角色 -->
@@ -292,7 +292,7 @@
 import { GetRoleList, OperateRole, DeleteRole } from '@/api/admin'
 
 export default {
-	name: 'CashManagement',
+	name: 'RoleManagement',
 	data() {
 		return {
 			formLabelWidth: '350px',
@@ -305,7 +305,7 @@ export default {
 				page: 1,
 				limit: 10
 			},
-			// 新增卡牌
+			// 新增角色
 			add_visible: false,
 			addForm: {
 				id: '', // 有id则修改，无id则新增
@@ -351,7 +351,7 @@ export default {
 				out_total: [ { required: false, message: '不能为空', change: 'blue' } ],
 				cash_flow: [ { required: false, message: '不能为空', change: 'blue' } ]
 			},
-			// 编辑卡牌
+			// 编辑角色
 			edit_visible: false,
 			editForm: {
 				id: '', // 有id则修改，无id则新增
@@ -443,13 +443,13 @@ export default {
 			this.getList()
 		},
 		// 重置
-		reset() {
-			this.infoForm = {
-				page: 1,
-				limit: 10
-			}
-			this.getList()
-		},
+		// reset() {
+		// 	this.infoForm = {
+		// 		page: 1,
+		// 		limit: 10
+		// 	}
+		// 	this.getList()
+		// },
 		// 编辑
 		edit(e) {
 			this.editForm = {
@@ -494,7 +494,7 @@ export default {
 				})
 		},
 
-		// 新增卡牌
+		// 新增角色
 		addSubmit(formName) {
 			this.$refs[formName].validate((valid) => {
 				// 若必填项不为空

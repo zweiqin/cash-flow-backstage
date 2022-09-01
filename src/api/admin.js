@@ -37,6 +37,32 @@ export function DeleteRole(data) {
 	return request_cong.delete('/deleterole', data)
 }
 
+// 查询分类列表/demo
+export function GetCategoryList(data) {
+	return request_cong.get('/getcategorylist', data)
+}
+// 新增或修改分类信息/demo
+export function CreateCategory(data) {
+	return request_cong.post('/createcategory', data)
+}
+// 删除分类/demo
+export function DeleteCategory(data) {
+	return request_cong.delete('/deletecategory', data)
+}
+
+// 查询方法列表/demo
+export function GetMethodList(data) {
+	return request_cong.get('/getmethodlist', data)
+}
+// 新增或修改方法信息/demo
+export function CreateMethod(data) {
+	return request_cong.post('/createmethod', data)
+}
+// 删除方法/demo
+export function DeleteMethod(data) {
+	return request_cong.delete('/deletemethod', data)
+}
+
 // // 新增用户/demo
 // export function admin_create(data) {
 // 	return request_cong.post('/api/v1/admin/user/', data)

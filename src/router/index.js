@@ -66,13 +66,13 @@ export const constantRoutes = [
 				path: 'category',
 				component: () => import('@/views/cash-management/category.vue'),
 				name: 'CategoryManagement',
-				meta: { title: '角色管理', icon: 'exit-fullscreen', affix: true }
+				meta: { title: '分类管理', icon: 'exit-fullscreen', affix: true }
 			},
 			{
 				path: 'method',
 				component: () => import('@/views/cash-management/method.vue'),
 				name: 'MethodManagement',
-				meta: { title: '角色管理', icon: 'exit-fullscreen', affix: true }
+				meta: { title: '方法管理', icon: 'exit-fullscreen', affix: true }
 			}
 			// {
 			// 	path: 'index',
