@@ -76,6 +76,7 @@
 								<el-option label="股票" value="2"></el-option>
 								<el-option label="企业投资" value="3"></el-option>
 								<el-option label="觉察投资" value="4"></el-option>
+								<el-option label="副业" value="5"></el-option>
 							</el-select>
 						</el-form-item>
 
@@ -371,6 +372,7 @@
 						<el-option label="股票" value="2"></el-option>
 						<el-option label="企业投资" value="3"></el-option>
 						<el-option label="觉察投资" value="4"></el-option>
+						<el-option label="副业" value="5"></el-option>
 					</el-select>
 				</el-form-item>
 
@@ -586,6 +588,7 @@
 						<el-option label="股票" value="2"></el-option>
 						<el-option label="企业投资" value="3"></el-option>
 						<el-option label="觉察投资" value="4"></el-option>
+						<el-option label="副业" value="5"></el-option>
 					</el-select>
 				</el-form-item>
 
@@ -605,7 +608,7 @@
 </template>
 
 <script>
-import { GetCardList, OperateCard, DeleteCard, GetCategoryList, GetMethodList } from '@/api/admin'
+import { DeleteCard, GetCardList, GetCategoryList, GetMethodList, OperateCard } from '@/api/admin'
 
 export default {
 	name: 'CashManagement',

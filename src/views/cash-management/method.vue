@@ -141,16 +141,16 @@
 				</el-form-item>
 
 				<el-form-item label="方法名称：" prop="method_name">
-					<el-input v-model="addForm.method_name" autocomplete="off" placeholder="请输入方法名称" />
+					<el-input v-model="editForm.method_name" autocomplete="off" placeholder="请输入方法名称" />
 				</el-form-item>
 
 				<el-form-item label="方法体：" prop="method">
-					<el-input v-model="addForm.method" autocomplete="off" placeholder="请输入方法体" />
+					<el-input v-model="editForm.method" autocomplete="off" placeholder="请输入方法体" />
 				</el-form-item>
 
 				<el-form-item label="状态：">
 					<el-select
-						v-model="addForm.status"
+						v-model="editForm.status"
 						clearable
 						placeholder="请选择"
 					>
@@ -171,7 +171,7 @@
 </template>
 
 <script>
-import { GetMethodList, CreateMethod, DeleteMethod } from '@/api/admin'
+import { CreateMethod, DeleteMethod, GetMethodList } from '@/api/admin'
 
 export default {
 	name: 'MethodManagement',
