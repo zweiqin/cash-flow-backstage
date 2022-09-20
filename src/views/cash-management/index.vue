@@ -77,6 +77,10 @@
 								<el-option label="企业投资" value="3"></el-option>
 								<el-option label="觉察投资" value="4"></el-option>
 								<el-option label="副业" value="5"></el-option>
+								<el-option label="理财产品" value="6"></el-option>
+								<el-option label="银行贷款" value="7"></el-option>
+								<el-option label="相亲卡" value="8"></el-option>
+								<el-option label="逆流卡" value="9"></el-option>
 							</el-select>
 						</el-form-item>
 
@@ -91,11 +95,11 @@
 			<!-- s表格 -->
 			<el-table :data="tableData.data" style="width: 100%" size="small" highlight-current-row>
 
-				<el-table-column prop="id" label="卡表主键id" min-width="100" />
+				<el-table-column prop="id" label="卡表主键id" width="100" />
 
-				<el-table-column prop="category_id" label="关联卡类别主键id" min-width="100" />
+				<el-table-column prop="category_id" label="关联卡类别主键id" width="100" />
 
-				<el-table-column prop="card_name" label="卡名称" min-width="100" />
+				<el-table-column prop="card_name" label="卡名称" min-width="200" />
 
 				<el-table-column prop="type" label="卡类型" min-width="100" />
 
@@ -139,7 +143,7 @@
 
 				<el-table-column prop="class" label="卡的类别" min-width="100" />
 
-				<el-table-column prop="describe" label="卡片描述" min-width="100" />
+				<el-table-column prop="describe" label="卡片描述" width="300" />
 
 				<el-table-column label="操作" min-width="120" fixed="right" align="center">
 					<template v-slot="scope">
@@ -166,7 +170,7 @@
 
 			<div class="block">
 				<el-pagination
-					:page-sizes="[10, 20, 40, 60, 80]"
+					:page-sizes="[10, 20, 40, 60, 80, 100]"
 					:page-size="infoForm.limit"
 					:current-page="infoForm.page"
 					layout="total, sizes, prev, pager, next, jumper"
@@ -304,7 +308,7 @@
 				</el-form-item>
 
 				<el-form-item v-if="addForm.relation_type==='1'" label="关联的要触发的卡id(以,号隔开)：" prop="relation_card">
-					<el-select v-model="relationCardComma" multiple placeholder="请选择">
+					<el-select v-model="relationCardComma" multiple filterable placeholder="请选择">
 						<el-option
 							v-for="item in tableData.data"
 							:key="item.id"
@@ -373,6 +377,10 @@
 						<el-option label="企业投资" value="3"></el-option>
 						<el-option label="觉察投资" value="4"></el-option>
 						<el-option label="副业" value="5"></el-option>
+						<el-option label="理财产品" value="6"></el-option>
+						<el-option label="银行贷款" value="7"></el-option>
+						<el-option label="相亲卡" value="8"></el-option>
+						<el-option label="逆流卡" value="9"></el-option>
 					</el-select>
 				</el-form-item>
 
@@ -589,6 +597,10 @@
 						<el-option label="企业投资" value="3"></el-option>
 						<el-option label="觉察投资" value="4"></el-option>
 						<el-option label="副业" value="5"></el-option>
+						<el-option label="理财产品" value="6"></el-option>
+						<el-option label="银行贷款" value="7"></el-option>
+						<el-option label="相亲卡" value="8"></el-option>
+						<el-option label="逆流卡" value="9"></el-option>
 					</el-select>
 				</el-form-item>
 
@@ -622,7 +634,7 @@ export default {
 			labelPosition: 'right',
 			infoForm: {
 				page: 1,
-				limit: 10,
+				limit: 100,
 				category_id: '',
 				type: '',
 				is_all: '',
@@ -733,7 +745,12 @@ export default {
 			relationCardJsonEdit: [ { id: '', value: '' } ]
 		}
 	},
-	mounted() {
+	created() {
+		this.getList()
+		this.getCategoryList()
+		this.getMethodList()
+	},
+	activated() {
 		this.getList()
 		this.getCategoryList()
 		this.getMethodList()
