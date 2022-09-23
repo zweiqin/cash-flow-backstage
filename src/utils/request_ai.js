@@ -6,7 +6,8 @@ import router from '@/router'
 
 const instance = axios.create({
 	// baseURL: process.env.VUE_APP_BASE_API_AI,
-	baseURL: 'http://192.168.0.88:10661/',
+	// baseURL: 'http://192.168.0.88:10661/',
+	baseURL: 'http://192.168.0.74:10661',
 	timeout: 5000
 })
 

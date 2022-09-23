@@ -54,25 +54,25 @@ export const constantRoutes = [
 				path: 'index',
 				component: () => import('@/views/cash-management/index'),
 				name: 'CashManagement',
-				meta: { title: '卡牌管理', icon: 'exit-fullscreen', affix: true }
+				meta: { noCache: true, title: '卡牌管理', icon: 'exit-fullscreen', affix: true }
 			},
 			{
 				path: 'role',
 				component: () => import('@/views/cash-management/role.vue'),
 				name: 'RoleManagement',
-				meta: { title: '角色管理', icon: 'exit-fullscreen', affix: true }
+				meta: { noCache: true, title: '角色管理', icon: 'exit-fullscreen', affix: true }
 			},
 			{
 				path: 'category',
 				component: () => import('@/views/cash-management/category.vue'),
 				name: 'CategoryManagement',
-				meta: { title: '分类管理', icon: 'exit-fullscreen', affix: true }
+				meta: { noCache: true, title: '分类管理', icon: 'exit-fullscreen', affix: true }
 			},
 			{
 				path: 'method',
 				component: () => import('@/views/cash-management/method.vue'),
 				name: 'MethodManagement',
-				meta: { title: '方法管理', icon: 'exit-fullscreen', affix: true }
+				meta: { noCache: true, title: '方法管理', icon: 'exit-fullscreen', affix: true }
 			}
 			// {
 			// 	path: 'index',

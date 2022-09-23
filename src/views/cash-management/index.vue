@@ -143,7 +143,7 @@
 
 				<el-table-column prop="class" label="卡的类别" min-width="100" />
 
-				<el-table-column prop="describe" label="卡片描述" width="300" />
+				<el-table-column prop="describe" label="卡片描述" width="300" :show-overflow-tooltip="true" />
 
 				<el-table-column label="操作" min-width="120" fixed="right" align="center">
 					<template v-slot="scope">
@@ -310,7 +310,7 @@
 				<el-form-item v-if="addForm.relation_type==='1'" label="关联的要触发的卡id(以,号隔开)：" prop="relation_card">
 					<el-select v-model="relationCardComma" multiple filterable placeholder="请选择">
 						<el-option
-							v-for="item in tableData.data"
+							v-for="item in allData.data"
 							:key="item.id"
 							:label="item.card_name"
 							:value="item.id"
@@ -328,7 +328,7 @@
 								placeholder="请选择"
 							>
 								<el-option
-									v-for="item in tableData.data"
+									v-for="item in allData.data"
 									:key="item.id"
 									:label="item.card_name"
 									:value="item.id"
@@ -352,6 +352,10 @@
 						<el-option label="不需要" value="0"></el-option>
 						<el-option label="需要" value="1"></el-option>
 					</el-select>
+				</el-form-item>
+
+				<el-form-item label="limit：" prop="limit">
+					<el-input v-model="addForm.limit" autocomplete="off" placeholder="（数值）请输入limit" />
 				</el-form-item>
 
 				<el-form-item label="状态：" prop="status">
@@ -530,7 +534,7 @@
 				<el-form-item v-if="editForm.relation_type==='1'" label="关联的要触发的卡id(以,号隔开)：" prop="relation_card">
 					<el-select v-model="relationCardCommaEdit" multiple placeholder="请选择">
 						<el-option
-							v-for="item in tableData.data"
+							v-for="item in allData.data"
 							:key="item.id"
 							:label="item.card_name"
 							:value="item.id"
@@ -548,7 +552,7 @@
 								placeholder="请选择"
 							>
 								<el-option
-									v-for="item in tableData.data"
+									v-for="item in allData.data"
 									:key="item.id"
 									:label="item.card_name"
 									:value="item.id"
@@ -572,6 +576,10 @@
 						<el-option label="不需要" value="0"></el-option>
 						<el-option label="需要" value="1"></el-option>
 					</el-select>
+				</el-form-item>
+
+				<el-form-item label="limit：" prop="limit">
+					<el-input v-model="editForm.limit" autocomplete="off" placeholder="（数值）请输入limit" />
 				</el-form-item>
 
 				<el-form-item label="状态：" prop="status">
@@ -631,6 +639,10 @@ export default {
 				data: [],
 				total: 0
 			},
+			allData: {
+				data: [],
+				total: 0
+			},
 			labelPosition: 'right',
 			infoForm: {
 				page: 1,
@@ -662,6 +674,7 @@ export default {
 				relation_type: '',
 				relation_card: '',
 				is_need_fill: '',
+				limit: '',
 				status: '',
 				class: '',
 				describe: ''
@@ -683,6 +696,7 @@ export default {
 				relation_type: [ { required: false, message: '不能为空', change: 'blue' } ],
 				// relation_card: [ { required: false, message: '不能为空', change: 'blue' } ],
 				is_need_fill: [ { required: false, message: '不能为空', change: 'blue' } ],
+				limit: [ { required: false, message: '不能为空', change: 'blue' } ],
 				status: [ { required: false, message: '不能为空', change: 'blue' } ],
 				class: [ { required: false, message: '不能为空', change: 'blue' } ],
 				describe: [ { required: false, message: '不能为空', change: 'blue' } ]
@@ -706,6 +720,7 @@ export default {
 				relation_type: '',
 				relation_card: '',
 				is_need_fill: '',
+				limit: '',
 				status: '',
 				class: '',
 				describe: ''
@@ -727,6 +742,7 @@ export default {
 				relation_type: [ { required: false, message: '不能为空', change: 'blue' } ],
 				// relation_card: [ { required: false, message: '不能为空', change: 'blue' } ],
 				is_need_fill: [ { required: false, message: '不能为空', change: 'blue' } ],
+				limit: [ { required: false, message: '不能为空', change: 'blue' } ],
 				status: [ { required: false, message: '不能为空', change: 'blue' } ],
 				class: [ { required: false, message: '不能为空', change: 'blue' } ],
 				describe: [ { required: false, message: '不能为空', change: 'blue' } ]
@@ -754,6 +770,25 @@ export default {
 		this.getList()
 		this.getCategoryList()
 		this.getMethodList()
+
+		GetCardList({
+			page: '',
+			limit: '',
+			category_id: '',
+			type: '',
+			is_all: '',
+			is_banker_follow: '',
+			is_need_fill: '',
+			status: '',
+			class: ''
+		})
+			.then((res) => {
+				console.log(res)
+				this.allData.data = res.data.items
+				this.allData.total = res.data.total
+			})
+			.catch(() => {
+			})
 	},
 	methods: {
 		// 打开新增页面
@@ -865,6 +900,7 @@ export default {
 				relation_card: e.relation_card,
 				is_need_fill: String(e.is_need_fill),
 				status: String(e.status),
+				limit: String(e.limit),
 				class: String(e.class),
 				describe: e.describe
 			}
