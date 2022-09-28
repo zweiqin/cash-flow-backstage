@@ -761,12 +761,7 @@ export default {
 			relationCardJsonEdit: [ { id: '', value: '' } ]
 		}
 	},
-	created() {
-		this.getList()
-		this.getCategoryList()
-		this.getMethodList()
-	},
-	activated() {
+	mounted() {
 		this.getList()
 		this.getCategoryList()
 		this.getMethodList()
@@ -790,6 +785,11 @@ export default {
 			.catch(() => {
 			})
 	},
+	// activated() {
+	// 	this.getList()
+	// 	this.getCategoryList()
+	// 	this.getMethodList()
+	// },
 	methods: {
 		// 打开新增页面
 		addClick() {
