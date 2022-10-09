@@ -321,16 +321,18 @@
 
 				<el-form-item v-if="addForm.relation_type==='2'" label="关联的要触发的卡id(键值对的json)：" prop="relation_card">
 					<template>
-						<div v-for="(i, index) in relationCardJson" :key="index" style="display: flex;">
+						<div v-for="(i, index) in relationCardJson" :key="index" style="display: flex;width: auto;">
 							<el-select
 								v-model="i.id"
 								clearable
+								filterable
 								placeholder="请选择"
+								style="width: 50%;"
 							>
 								<el-option
 									v-for="item in allData.data"
 									:key="item.id"
-									:label="item.card_name"
+									:label="`${item.card_name}(${item.id})`"
 									:value="item.id"
 								>
 								</el-option>
@@ -385,6 +387,7 @@
 						<el-option label="银行贷款" value="7"></el-option>
 						<el-option label="相亲卡" value="8"></el-option>
 						<el-option label="逆流卡" value="9"></el-option>
+						<el-option label="项目" value="11"></el-option>
 					</el-select>
 				</el-form-item>
 
@@ -549,12 +552,13 @@
 							<el-select
 								v-model="i.id"
 								clearable
+								filterable
 								placeholder="请选择"
 							>
 								<el-option
 									v-for="item in allData.data"
 									:key="item.id"
-									:label="item.card_name"
+									:label="`${item.card_name}(${item.id})`"
 									:value="item.id"
 								>
 								</el-option>
@@ -609,6 +613,7 @@
 						<el-option label="银行贷款" value="7"></el-option>
 						<el-option label="相亲卡" value="8"></el-option>
 						<el-option label="逆流卡" value="9"></el-option>
+						<el-option label="项目" value="11"></el-option>
 					</el-select>
 				</el-form-item>
 
